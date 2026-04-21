@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Experiment 1 - EDTA Hardness</title>
+    <title>Experiment 3 - Na2CO3 + NaOH Estimation</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-{% include 'partials/header.html' %}
     <div class="container">
         <a href="/calculations" class="back-link">← Back to Experiments</a>
-        <h1>Experiment 1: Determination of Hardness of Water using EDTA</h1>
+        <h1>Experiment 3: Estimation of Na2CO3 + NaOH (Double Indicator Method)</h1>
         
-        <form method="POST" action="/exp1/calculate" id="experimentForm">
-            <input type="hidden" name="show_results" id="showResults" value="0">
-            
+        <form method="POST" id="experimentForm">
             <section class="experiment-section" id="titration1Section">
-                <h2>Titration 1 - Standardization of EDTA</h2>
+                <h2>Titration 1 - Standardization of NaOH</h2>
                 
                 <div class="form-group">
-                    <label>Volume of Standard Hard Water (mL):</label>
-                    <input type="number" step="0.01" name="standard_hardwater_volume" id="standardHardWaterVolume" placeholder="Enter volume">
+                    <label>Volume of NaOH (mL):</label>
+                    <input type="number" step="0.01" name="vol_naoh" value="0" id="volNaoh">
+                </div>
+                
+                <div class="form-group">
+                    <label>Normality of NaOH:</label>
+                    <input type="number" step="0.01" name="norm_naoh" value="0" id="normNaoh">
                 </div>
                 
                 <div class="form-group">
                     <label>Number of readings:</label>
-                    <input type="number" name="t1_readings" id="t1_readings" min="0" max="10" placeholder="Enter any value" onchange="generateTable('t1')">
+                    <input type="number" name="t1_readings" id="t1_readings" min="0" max="10" value="0" onchange="generateTable('t1')">
                     <button type="button" onclick="generateTable('t1')">Generate Table</button>
                 </div>
                 
@@ -44,19 +46,19 @@
             </section>
             
             <section class="experiment-section" id="titration2Section">
-                <h2>Titration 2 - Total Hardness</h2>
+                <h2>Titration 2 - Phenolphthalein Endpoint</h2>
                 
                 <div class="form-group">
-                    <label>Volume of Sample Water (mL):</label>
-                    <input type="number" step="0.01" name="sample_volume" id="sampleVolume" placeholder="Enter volume">
+                    <label>Volume of Sample (mL):</label>
+                    <input type="number" step="0.01" name="vol_sample" value="0" id="volSample">
                 </div>
-
+                
                 <div class="form-group">
                     <label>Number of readings:</label>
-                    <input type="number" name="t2_readings" id="t2_readings" min="0" max="10" placeholder="Enter any value" onchange="generateTable('t2')">
+                    <input type="number" name="t2_readings" id="t2_readings" min="0" max="10" value="0" onchange="generateTable('t2')">
                     <button type="button" onclick="generateTable('t2')">Generate Table</button>
                 </div>
-
+                
                 <table class="titration-table" id="t2_table">
                     <thead>
                         <tr>
@@ -70,18 +72,13 @@
                     </tbody>
                 </table>
             </section>
-
+            
             <section class="experiment-section" id="titration3Section">
-                <h2>Titration 3 - Permanent Hardness</h2>
-
-                <div class="form-group">
-                    <label>Volume of Boiled Sample Water (mL):</label>
-                    <input type="number" step="0.01" name="boiled_volume" id="boiledVolume" placeholder="Enter volume">
-                </div>
+                <h2>Titration 3 - Methyl Orange Endpoint</h2>
                 
                 <div class="form-group">
                     <label>Number of readings:</label>
-                    <input type="number" name="t3_readings" id="t3_readings" min="0" max="10" placeholder="Enter any value" onchange="generateTable('t3')">
+                    <input type="number" name="t3_readings" id="t3_readings" min="0" max="10" value="0" onchange="generateTable('t3')">
                     <button type="button" onclick="generateTable('t3')">Generate Table</button>
                 </div>
                 
@@ -109,21 +106,24 @@
                 <h2>Results</h2>
                 <div class="result-box">
                     <h3>Titration 1 - Standardization</h3>
-                    <p>Volume of EDTA Used: <span id="r_v1"></span> mL</p>
+                    <p>Volume of NaOH: <span id="r_vol_naoh"></span> mL</p>
+                    <p>Normality of NaOH: <span id="r_norm_naoh"></span> N</p>
+                    <p>Volume of HCl Used: <span id="r_v1"></span> mL</p>
+                    <p>Normality of HCl: <span id="r_norm_acid"></span> N</p>
                 </div>
                 <div class="result-box">
-                    <h3>Titration 2 - Total Hardness</h3>
-                    <p>Volume of EDTA Used: <span id="r_v2"></span> mL</p>
+                    <h3>Titration 2 - Phenolphthalein (Vp)</h3>
+                    <p>Volume of Sample: <span id="r_sample_vol"></span> mL</p>
+                    <p>Volume of HCl Used: <span id="r_vp"></span> mL</p>
                 </div>
                 <div class="result-box">
-                    <h3>Titration 3 - Permanent Hardness</h3>
-                    <p>Volume of EDTA Used: <span id="r_v3"></span> mL</p>
+                    <h3>Titration 3 - Methyl Orange (Vm)</h3>
+                    <p>Volume of HCl Used: <span id="r_vm"></span> mL</p>
                 </div>
                 <div class="result-box final-result">
                     <h3>Final Result</h3>
-                    <p>Total Hardness: <strong><span id="r_total"></span> ppm</strong></p>
-                    <p>Permanent Hardness: <strong><span id="r_permanent"></span> ppm</strong></p>
-                    <p>Temporary Hardness: <strong><span id="r_temporary"></span> ppm</strong></p>
+                    <p>Amount of NaOH: <strong><span id="r_naoh"></span> g/L</strong></p>
+                    <p>Amount of Na2CO3: <strong><span id="r_na2co3"></span> g/L</strong></p>
                 </div>
             </section>
             
@@ -136,7 +136,7 @@
         <div id="downloadSection" style="display: none;">
             <section class="experiment-section">
                 <h2>Download Calculation</h2>
-                <form method="POST" action="/exp1/download_pdf">
+                <form method="POST" action="/exp3/download_pdf">
                     <input type="hidden" name="result_data" id="resultData">
                     <input type="hidden" name="table_data" id="tableData">
                     <div class="form-group">
@@ -194,43 +194,52 @@
                 v1List.push(vol);
             }
             
-            let v2List = [];
+            let vpList = [];
             for (let i = 0; i < t2Readings; i++) {
                 const vol = parseFloat(document.getElementById('t2_vol_' + i).textContent) || 0;
-                v2List.push(vol);
+                vpList.push(vol);
             }
             
-            let v3List = [];
+            let vmList = [];
             for (let i = 0; i < t3Readings; i++) {
                 const vol = parseFloat(document.getElementById('t3_vol_' + i).textContent) || 0;
-                v3List.push(vol);
+                vmList.push(vol);
             }
             
             const v1 = v1List.length > 0 ? Math.min(...v1List.filter(v => v > 0)) : 0;
-            const v2 = v2List.length > 0 ? Math.min(...v2List.filter(v => v > 0)) : 0;
-            const v3 = v3List.length > 0 ? Math.min(...v3List.filter(v => v > 0)) : 0;
-            const vs = parseFloat(document.getElementById('sampleVolume').value) || 0;
-            const vb = parseFloat(document.getElementById('boiledVolume').value) || 0;
-            const v_std = parseFloat(document.getElementById('standardHardWaterVolume').value) || 0;
+            const Vp = vpList.length > 0 ? Math.min(...vpList.filter(v => v > 0)) : 0;
+            const Vm = vmList.length > 0 ? Math.min(...vmList.filter(v => v > 0)) : 0;
             
-            const totalHardness = (v2 * 1000 / vs) * (v_std / v1);
-            const permanentHardness = (v3 * 1000 / vb) * (v_std / v1);
-            const temporaryHardness = totalHardness - permanentHardness;
+            const volNaoh = parseFloat(document.getElementById('volNaoh').value) || 0;
+            const normNaoh = parseFloat(document.getElementById('normNaoh').value) || 0;
+            const sampleVol = parseFloat(document.getElementById('volSample').value) || 0;
             
+            const normAcid = (normNaoh * volNaoh) / v1;
+            
+            const strengthNaoh = (2 * Vp - Vm) * normAcid / 20;
+            const amountNaoh = strengthNaoh * 40;
+            
+            const strengthNahco3 = 2 * (Vm - Vp) * normAcid / 20;
+            const amountNahco3 = strengthNahco3 * 53;
+            
+            document.getElementById('r_vol_naoh').textContent = volNaoh.toFixed(2);
+            document.getElementById('r_norm_naoh').textContent = normNaoh.toFixed(4);
             document.getElementById('r_v1').textContent = v1.toFixed(2);
-            document.getElementById('r_v2').textContent = v2.toFixed(2);
-            document.getElementById('r_v3').textContent = v3.toFixed(2);
-            document.getElementById('r_total').textContent = totalHardness.toFixed(2);
-            document.getElementById('r_permanent').textContent = permanentHardness.toFixed(2);
-            document.getElementById('r_temporary').textContent = temporaryHardness.toFixed(2);
+            document.getElementById('r_norm_acid').textContent = normAcid.toFixed(4);
+            document.getElementById('r_sample_vol').textContent = sampleVol.toFixed(2);
+            document.getElementById('r_vp').textContent = Vp.toFixed(2);
+            document.getElementById('r_vm').textContent = Vm.toFixed(2);
+            document.getElementById('r_naoh').textContent = amountNaoh.toFixed(4);
+            document.getElementById('r_na2co3').textContent = amountNahco3.toFixed(4);
             
             const resultData = {
-                v1: v1, v2: v2, v3: v3,
-                v1List: v1List, v2List: v2List, v3List: v3List,
-                vs: vs, vb: vb, v_std: v_std,
-                totalHardness: totalHardness,
-                permanentHardness: permanentHardness,
-                temporaryHardness: temporaryHardness
+                v1: v1, Vp: Vp, Vm: Vm,
+                v1List: v1List, vpList: vpList, vmList: vmList,
+                volNaoh: volNaoh, normNaoh: normNaoh, sampleVol: sampleVol,
+                normAcid: normAcid,
+                strengthNaoh: strengthNaoh,
+                amountNaoh: amountNaoh,
+                amountNahco3: amountNahco3
             };
             document.getElementById('resultData').value = JSON.stringify(resultData);
             
